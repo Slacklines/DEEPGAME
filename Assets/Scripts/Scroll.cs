@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Scroll : MonoBehaviour
 {
-    public float speed = 1f;
+    public float speed;
     private Material mat;
 
     public float SnappedYOffset;
 
     void Start(){
+        speed = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>().fallSpeed;
         mat = GetComponent<Renderer>().material;
     }
 

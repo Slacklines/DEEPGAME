@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,6 +12,17 @@ public class PlayerMovement : MonoBehaviour
     public float cooldown = 10f;
     private float curCooldown = 0f;
     private bool shooting;
+    public float bulletPower;
+    public GameObject bulletPrefab;
+    public Transform firePoint;
+
+    public float fallSpeed = .7f;
+
+    public bool dead;
+    public float deathForce = 10f;
+    public float fallForce = 5f;
+    private float deathWait = 3f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +32,15 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (dead){
+            if (deathWait <= 0)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+            deathWait -= Time.fixedDeltaTime;
+            return;
+        }
+
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 10f);
 
         float angle = getAngle(transform.position, mousePosition);
@@ -37,11 +60,41 @@ public class PlayerMovement : MonoBehaviour
         if (shooting){
             rb.AddForce(transform.right * recoilForce, ForceMode2D.Impulse);
             curCooldown = cooldown;
+
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            bullet.GetComponent<Rigidbody2D>().AddForce(firePoint.up*bulletPower, ForceMode2D.Force);
+
             shooting = false;
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if ((other.gameObject.tag == "Obstacle" || other.gameObject.tag == "Enemy") && !dead)
+        {
+            playerDeath();
         }
     }
 
     float getAngle(Vector2 a, Vector2 b){
         return Mathf.Atan2(a.y - b.y, a.x - b.x) * Mathf.Rad2Deg;
     }
+
+    void playerDeath()
+    {
+        dead = true;
+
+        GameObject.FindWithTag("Floor").SetActive(false);
+
+        rb.gravityScale=fallForce;
+        rb.drag = 0.5f;
+        rb.angularDrag = 0f;
+
+        Quaternion randomAngle = Quaternion.Euler(0,0,Random.Range(-45f, 45f));
+
+        Vector3 forceVector = randomAngle * Vector3.up;
+
+        rb.AddForce(forceVector*deathForce, ForceMode2D.Impulse);
+    }
 }
+ 
