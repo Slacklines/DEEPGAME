@@ -19,7 +19,7 @@ public class ObstacleBehaviour : MonoBehaviour
 
         SnappedYOffset = (Mathf.Floor(rawYOffset * 100) / 10) - offset;
 
-        if (SnappedYOffset >= 7)
+        if (SnappedYOffset >= 14)
         {
             Destroy(gameObject);
         }

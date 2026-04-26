@@ -10,6 +10,8 @@ public class EnemyBehavior : MonoBehaviour
     public int stepNum = 100;
     float stepSize;
     float startLoc;
+
+    public GameObject deathParticles;
     //float speed = 2f;
     // Start is called before the first frame update
     void Start()
@@ -56,6 +58,7 @@ public class EnemyBehavior : MonoBehaviour
 
     void enemyDeath()
     {
+        Instantiate(deathParticles, transform.position, transform.rotation);
         Destroy(gameObject);
     }
 }

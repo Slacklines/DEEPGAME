@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
@@ -21,7 +22,8 @@ public class PlayerMovement : MonoBehaviour
     public bool dead;
     public float deathForce = 10f;
     public float fallForce = 5f;
-    private float deathWait = 3f;
+    public TextMeshProUGUI depthCounter;
+    private float depth;
 
     // Start is called before the first frame update
     void Start()
@@ -33,13 +35,17 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         if (dead){
-            if (deathWait <= 0)
+            /*if (deathWait <= 0)
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                GameObject.FindWithTag("Animator").GetComponent<animationHandler>().restartLevel();
             }
-            deathWait -= Time.fixedDeltaTime;
+            deathWait -= Time.fixedDeltaTime;*/
             return;
         }
+
+        depth = Mathf.Floor(Time.timeSinceLevelLoad * fallSpeed * 5);
+
+        depthCounter.text = depth.ToString() + " M";
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 10f);
 
@@ -82,9 +88,11 @@ public class PlayerMovement : MonoBehaviour
 
     void playerDeath()
     {
+        Debug.Log("Player dead");
         dead = true;
 
         GameObject.FindWithTag("Floor").SetActive(false);
+        GameObject.FindWithTag("Roof").SetActive(false);
 
         rb.gravityScale=fallForce;
         rb.drag = 0.5f;
@@ -95,6 +103,8 @@ public class PlayerMovement : MonoBehaviour
         Vector3 forceVector = randomAngle * Vector3.up;
 
         rb.AddForce(forceVector*deathForce, ForceMode2D.Impulse);
+
+        GameObject.FindWithTag("Animator").GetComponent<animationHandler>().restartLevel();
     }
 }
  

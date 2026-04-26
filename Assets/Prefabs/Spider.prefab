@@ -172,3 +172,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stepNum: 100
+  deathParticles: {fileID: 2320333409798951997, guid: 8b5aa73265f5443a2b1c8c69caf5ebe8, type: 3}

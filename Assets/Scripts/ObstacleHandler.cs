@@ -9,7 +9,7 @@ using UnityEngine.AI;
 public class ObstacleHandler : MonoBehaviour
 {
     public float period;
-    private float curPeriod;
+    private float curPeriod = 6f;
     private float stage;
     private float speed;
     public GameObject[] wallObstacles;
@@ -31,7 +31,9 @@ public class ObstacleHandler : MonoBehaviour
         else if (UnityEngine.Random.Range(0f, 1f) < .3)
         {
 
-            if (UnityEngine.Random.Range(0f, 1f) < .15f)
+            //30% every 3 seconds of spawning something
+
+            if (UnityEngine.Random.Range(0f, 1f) < .20f)
             {
                 summonEnemy();
             }
@@ -40,9 +42,11 @@ public class ObstacleHandler : MonoBehaviour
                 summonWallObstacle();
             }
 
+            //20% Enamy chance and 80% Wall Obstacle chance
+
             stage++;
             curPeriod = period;
-            period = Mathf.Max(period-.1f, .15f);
+            //period = Mathf.Max(period-.1f, .15f);
         }
     }
 
