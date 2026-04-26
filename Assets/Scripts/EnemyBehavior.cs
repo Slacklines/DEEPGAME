@@ -8,41 +8,70 @@ public class EnemyBehavior : MonoBehaviour
     int health = 1;
 
     public int stepNum = 100;
-    float stepSize;
-    float startLoc;
+    public float stepSize;
+    public float startLoc;
+
+    public string enemyType;
 
     public GameObject deathParticles;
     //float speed = 2f;
     // Start is called before the first frame update
     void Start()
     {
-        newTarget(0f);
+        if (enemyType == "Vertical" || enemyType == "Horizontal")
+        {
+            newTarget(0f);
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (stepNum > 100)
+        if (enemyType == "Vertical" || enemyType == "Horizontal")
         {
-            newTarget();
+            if (stepNum > 100)
+            {
+                newTarget();
+            }
+
+            if (enemyType == "Vertical")
+            {
+                transform.position = new Vector3(transform.position.x, startLoc+stepSize*stepNum ,transform.position.z);
+            }
+            else
+            {
+                transform.position = new Vector3(startLoc+stepSize*stepNum ,transform.position.y, transform.position.z);
+            }
+
+            stepNum++;
         }
-
-        transform.position = new Vector3(transform.position.x, startLoc+stepSize*stepNum ,transform.position.z);
-
-        stepNum++;
-
-
     }
 
     void newTarget(float targetLoc = -5f)
     {
-        startLoc = transform.position.y;
-
-        if (targetLoc == -5)
+        float distance;
+        if (enemyType == "Vertical")
         {
-            targetLoc = UnityEngine.Random.Range(-4f, 4f);
+            startLoc = transform.position.y;
+
+            if (targetLoc == -5f)
+            {
+                targetLoc = UnityEngine.Random.Range(-4f, 4f);
+            }
+
+            distance = targetLoc - transform.position.y;
+        }else
+        {
+            startLoc = transform.position.x;
+
+            if (targetLoc == -5f)
+            {
+                targetLoc = UnityEngine.Random.Range(-5f, 5f);
+            }
+
+            distance = targetLoc - transform.position.x;           
         }
-        float distance = targetLoc - transform.position.y;
+
         stepSize = distance/100;
         stepNum = 1;
     }

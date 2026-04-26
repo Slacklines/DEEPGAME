@@ -43,9 +43,12 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        depth = Mathf.Floor(Time.timeSinceLevelLoad * fallSpeed * 5);
+        if (depthCounter != null)
+        {
+            depth = Mathf.Floor(Time.timeSinceLevelLoad * fallSpeed * 5);
 
-        depthCounter.text = depth.ToString() + " M";
+            depthCounter.text = depth.ToString() + " M";
+        }
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 10f);
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ObstacleBehaviour : MonoBehaviour
@@ -8,9 +9,13 @@ public class ObstacleBehaviour : MonoBehaviour
     public float offset;
     public float SnappedYOffset;
 
+    public bool breakable;
+    public int health = 1;
+    public GameObject breakParticles;
+
     void Start(){
         speed = GameObject.FindWithTag("Player").GetComponent<PlayerMovement>().fallSpeed;
-        offset = Time.time * speed * 10 + 7;
+        offset = Time.time * speed * 10 - transform.position.y;
     }
 
     void Update()
@@ -25,5 +30,18 @@ public class ObstacleBehaviour : MonoBehaviour
         }
 
         transform.position = new Vector3(transform.position.x, SnappedYOffset, transform.position.z);
+    }
+
+    public void damage(){
+        health--;
+        if (health <= 0)
+        {
+            breakSelf();
+        }
+    }
+
+    private void breakSelf(){
+        Instantiate(breakParticles, transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 }

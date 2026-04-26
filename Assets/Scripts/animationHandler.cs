@@ -17,7 +17,19 @@ public class animationHandler : MonoBehaviour
         loadCoroutine = StartCoroutine(loadLevel());
     }
 
-    IEnumerator loadLevel()
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("start game");
+        if (other.gameObject.tag == "Player")
+        {
+            deathDelay = new WaitForSeconds(1f);
+            if (loadCoroutine != null){StopCoroutine(loadCoroutine);}
+            loadCoroutine = StartCoroutine(loadLevel("MainScene"));
+            other.gameObject.SetActive(false);
+        }
+    }
+
+    IEnumerator loadLevel(string sceneName = null)
     {
         yield return deathDelay;
 
@@ -25,6 +37,13 @@ public class animationHandler : MonoBehaviour
 
         yield return transitionDelay;
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (sceneName != null)
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+        else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 }

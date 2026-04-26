@@ -22,7 +22,7 @@ public class BulletBehaviour : MonoBehaviour
 
         float angle = Mathf.Atan2(reflectDir.y, reflectDir.x) * Mathf.Rad2Deg;
 
-        killBullet(other.gameObject.tag, angle);
+        killBullet(angle);
 
     }
 
@@ -33,9 +33,18 @@ public class BulletBehaviour : MonoBehaviour
             other.gameObject.GetComponent<EnemyBehavior>().damage();
             Destroy(gameObject);
         }
+        if (other.gameObject.tag == "Obstacle")
+        {
+            var script = other.gameObject.GetComponent<ObstacleBehaviour>();
+            if (script.breakable)
+            {
+                script.damage();
+            }
+            killBullet(transform.eulerAngles.z);
+        }
     }
 
-    public void killBullet(string tag, float angle){
+    public void killBullet(float angle){
 
             GameObject myBulletDeath = Instantiate(bulletDeath, transform.position, Quaternion.Euler(0, 0, angle));
 
